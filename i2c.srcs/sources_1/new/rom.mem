@@ -1,0 +1,177 @@
+/* 
+	khi su dung module i2c de dieu khien lcd o che do 4-bit
+	thi khuon dang du lieu truyen cho i2c se co dang sau:
+		<BL> <EN> <RW> <RS> <B3> <B2> <B1> <B0>
+		BL: backlight (0: off, 1: on)
+		EN: enable
+		RW: read/write (0: write, 1: read)
+		RS: register select (0: command, 1: data)
+		B3, B2, B1, B0: 4 bit du lieu
+
+	de gui mot lenh 8 bit cho lcd thong thuong ta phai gui 4 lan (vi can phai tao xung enable)
+		1. gui 4 bit cao, voi EN = 1: : 1 1 0 0 <B7> <B6> <B5> <B4>
+		2. gui 4 bit cao, voi EN = 0: : 1 0 0 0 <B7> <B6> <B5> <B4>
+		3. gui 4 bit thap, voi EN = 1: : 1 1 0 0 <B3> <B2> <B1> <B0>
+		4. gui 4 bit thap, voi EN = 0: : 1 0 0 0 <B3> <B2> <B1> <B0>
+
+	de gui 8 bit du lieu cho lcd ta cung phai lam tuong tu nhung de RS = 1
+
+	moi dong trong file nay se chua mot chu so hexa can phai gui cho i2c de dieu khien lcd
+	co tong cong 144 lenh can phai gui cho lcd de hien thi chuoi:
+	"     HQH     "
+	" Hello, world!"
+*/
+
+// init lcd
+0c
+08
+2c
+28
+2c
+28
+8c
+88
+0c
+08
+cc
+c8
+0c
+08
+6c
+68
+0c
+08
+1c
+18
+
+// move cursor to 0,0
+8c
+88
+0c
+08
+
+// send string "     HQH     "
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+4d
+49
+8d
+89
+5d
+59
+1d
+19
+4d
+49
+8d
+89
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+2d
+29
+0d
+09
+0d
+09
+0d
+09
+
+// move cursor to 1,0
+cc
+c8
+0c
+08
+
+// send string " Hello, world!"
+2d
+29
+0d
+09
+4d
+49
+8d
+89
+6d
+69
+5d
+59
+6d
+69
+cd
+c9
+6d
+69
+cd
+c9
+6d
+69
+fd
+f9
+2d
+29
+cd
+c9
+2d
+29
+0d
+09
+7d
+79
+7d
+79
+6d
+69
+fd
+f9
+7d
+79
+2d
+29
+6d
+69
+cd
+c9
+6d
+69
+4d
+49
+2d
+29
+1d
+19
+0d
+09
+0d
+09

@@ -12,11 +12,11 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0fs"></ZoomStartTime>
-      <ZoomEndTime time="801000001fs"></ZoomEndTime>
-      <Cursor1Time time="139752927fs"></Cursor1Time>
+      <ZoomEndTime time="80130253fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="116"></NameColumnWidth>
+      <NameColumnWidth column_width="112"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="16" />
@@ -31,18 +31,21 @@
    <wvobject fp_name="/tb_i2c_write/command" type="array">
       <obj_property name="ElementShortName">command[1:0]</obj_property>
       <obj_property name="ObjectShortName">command[1:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_i2c_write/addr" type="array">
       <obj_property name="ElementShortName">addr[6:0]</obj_property>
       <obj_property name="ObjectShortName">addr[6:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_i2c_write/data" type="array">
       <obj_property name="ElementShortName">data[7:0]</obj_property>
       <obj_property name="ObjectShortName">data[7:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_i2c_write/i2c_write_inst/status_reg" type="array">
-      <obj_property name="ElementShortName">status_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">status_reg[31:0]</obj_property>
+      <obj_property name="ElementShortName">status_reg[3:0]</obj_property>
+      <obj_property name="ObjectShortName">status_reg[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_i2c_write/scl" type="logic">
       <obj_property name="ElementShortName">scl</obj_property>

@@ -26,6 +26,7 @@
 // during a read operation, the LSB of din is the NACK bit
 // i.e., indicate whether the current read is the last one in read cycle
 
+`timescale 1ns / 1ps
 
 module i2c_master(
    input  logic clk, reset,
@@ -246,5 +247,3 @@ module i2c_master(
    assign done_tick = done_tick_i;
    assign ready = ready_i;
 endmodule
-
-

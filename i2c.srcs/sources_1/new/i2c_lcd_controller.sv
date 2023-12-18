@@ -8,7 +8,7 @@ module i2c_lcd_controller(
 	output tri scl,
 	inout  tri sda 
 );
-	localparam ADDR =6'h2f;
+	
 	localparam n = 4; // len = 144
 
 	typedef enum {
@@ -41,7 +41,7 @@ module i2c_lcd_controller(
 	localparam dvsr = 100;
 
 	logic [8:0] c_reg, c_next;
-	logic [1:0] command;
+	logic [1:0] cmd_next, cmd_reg;
 	logic [7:0] data_reg, data_next, addr_reg, addr_next;
 	logic [2:0] status_i;
 	logic [7:0] rom [0:n];
@@ -52,8 +52,8 @@ module i2c_lcd_controller(
 	i2c_write  i2c_write_inst (
 		.clk(clk),
 		.reset(!rst_n),
-		.command(command), // 00 start, 01 write, 10 wait, 11 stop
-		.addr(ADDR),
+		.command(cmd_reg), // 00 start, 01 write, 10 wait, 11 stop
+		.addr('h2f),
 		.data(data_reg),
 		.status(status_i),
 		.scl(scl),
@@ -68,11 +68,13 @@ module i2c_lcd_controller(
 			c_reg <= 0;
 			addr_reg <= 0;
 			data_reg <= 0;
+			cmd_reg <= 0;
 		end else begin
 			state_reg <= state_next;
 			c_reg <= c_next;
 			addr_reg <= addr_next;
 			data_reg <= data_next;
+			cmd_reg <= cmd_next;
 		end
 	end
 
@@ -81,11 +83,10 @@ module i2c_lcd_controller(
 		c_next = c_reg + 1;
 		addr_next = addr_reg;
 		data_next = data_reg;
-		command = 2'b00;
+		cmd_next = cmd_reg;
 		case (state_reg)
 			SEND_ADDRESS: begin
-				command = 2'b00;
-				data_next = ADDR;
+				cmd_next = 2'b00;
 				state_next = ACK;
 			end
 			ACK: begin
@@ -100,19 +101,19 @@ module i2c_lcd_controller(
 			end
 			SEND_COMMAND: begin
 				c_next = 0;
-				command = 2'b01;
+				cmd_next = 2'b01;
 				data_next = rom[addr_reg];
-				// beginning waiting for ack
-				if (status_i == YELLOW) begin
+				// waiting for ack
+				if (status_i == GREEN) begin
 					state_next = WAIT;
+				end
+				// i2c module didn't ack
+				if (status_i == RED) begin
+					state_next = DONE;
 				end
 			end
 			WAIT: begin
-				command = 2'b10; // wait
-				if (status_i == RED) begin
-					// i2c module didn't ack
-					state_next = DONE;
-				end
+				cmd_next = 2'b10; // wait
 				if (c_reg == dvsr) begin
 					state_next = SEND_COMMAND;
 					addr_next = addr_reg + 1;
@@ -122,9 +123,8 @@ module i2c_lcd_controller(
 				end
 			end
 			DONE: begin
-				command = 2'b11;
+				cmd_next = 2'b11;
 				data_next = 0;
-				state_next = DONE;
 			end
 		endcase
 	end

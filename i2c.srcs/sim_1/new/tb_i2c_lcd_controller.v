@@ -31,17 +31,43 @@ module tb_i2c_lcd_controller;
 	end
 	
 	initial begin
-		//serital_data = 1;
+		serital_data = 1;
 		rst_n = 0;
 		#T;
 		rst_n = 1;
 		#(2000*T);
 		
+		debug = 0;
 		wait(status == 3'b110); // yellow -> wait ready status
 		#(8*4000*T);	// wait writing 8 bit
 		// fake ack signal
-		//serital_data = 0;
+		debug = 1;
+		serital_data = 0;
 		#(4000*T); // 1 scl
-		//serital_data = 1;
+		serital_data = 1;
+		
+		wait(status == 3'b110); // yellow -> wait ready status
+		#(8*4000*T);	// wait writing 8 bit
+		// fake ack signal
+		debug = 2;
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		
+		wait(status == 3'b110); // yellow -> wait ready status
+		#(8*4000*T);	// wait writing 8 bit
+		// fake ack signal
+		debug = 3;
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		
+		wait(status == 3'b110); // yellow -> wait ready status
+		#(8*4000*T);	// wait writing 8 bit
+		// fake ack signal
+		debug = 4;
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
 	end
 endmodule

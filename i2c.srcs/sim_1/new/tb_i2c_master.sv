@@ -41,43 +41,65 @@ module tb_i2c_write;
 		#(2000*T);
 		
 		// -------------------- start writing address
-		debug = 0;
+		debug = 1;
 		command = 0;
-		addr = 6'h21;
-		wait(status == 3'b110); // yellow -> wait ready status
+		addr = 6'h2f;
+		wait(status == 3'b110); // yellow -> beginning of writing phase
 		#(8*4000*T);	// wait writing 8 bit
 		
+		debug = 0;
 		// fake ack signal
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
 		
 		// -------------------- start writing data
-		debug = 1;
+		debug = 2;
 		command = 1;
 		data = 8'h55;
 		
 		wait(status == 3'b110); // yellow - wait ready status
 		#(8*4000*T);   // wait writing 8 bit
 		
+		debug = 0;
+		// fake ack signal
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
+		
+		debug = 3;
+		// -------------------- start writing data
+		command = 1;
+		data = 8'h08;
+		
+		wait(status == 3'b110); // yellow - wait ready status
+		debug = 4;
+		#(8*4000*T);   // wait writing 8 bit
+		
+		debug = 0;
 		// fake ack signal
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
 		
 		// ------------------ wating some time
-		debug = 2;
+		debug = 5;
 		command = 2'b10; // wait
 		#(5*4000*T);
 		
+		wait(status == 3'b001); // blue -> check ack 
+		
 		// ----------------- start writing data
-		debug = 3;
+		debug = 6;
 		command = 2'b01;
 		data = 8'h22;
 		
 		wait(status == 3'b110); // yellow - wait ready status
 		#(8*4000*T);   // wait writing 8 bit
 		
+		debug = 0;
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
@@ -92,44 +114,66 @@ module tb_i2c_write;
 		#(14*4000*T);
 		
 		// -------------------- start writing address
-		debug = 0;
+		debug = 1;
 		command = 0;
-		addr = 6'h77;
-		wait(status == 3'b110); // yellow -> wait ready status
-		debug = 7;
+		addr = 6'h2f;
+		wait(status == 3'b110); // yellow -> beginning of writing phase
 		#(8*4000*T);	// wait writing 8 bit
 		
+		debug = 0;
 		// fake ack signal
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
 		
 		// -------------------- start writing data
-		debug = 1;
+		debug = 2;
 		command = 1;
 		data = 8'h55;
 		
 		wait(status == 3'b110); // yellow - wait ready status
 		#(8*4000*T);   // wait writing 8 bit
 		
+		debug = 0;
+		// fake ack signal
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
+		
+		debug = 3;
+		// -------------------- start writing data
+		command = 1;
+		data = 8'h08;
+		
+		wait(status == 3'b110); // yellow - wait ready status
+		debug = 4;
+		#(8*4000*T);   // wait writing 8 bit
+		
+		debug = 0;
 		// fake ack signal
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
 		
 		// ------------------ wating some time
-		debug = 2;
+		debug = 5;
 		command = 2'b10; // wait
 		#(5*4000*T);
 		
+		
+		wait(status == 3'b001); // blue -> check ack 
+		
 		// ----------------- start writing data
-		debug = 3;
+		debug = 6;
 		command = 2'b01;
 		data = 8'h22;
 		
 		wait(status == 3'b110); // yellow - wait ready status
 		#(8*4000*T);   // wait writing 8 bit
 		
+		debug = 0;
 		serital_data = 0;
 		#(4000*T); // 1 scl
 		serital_data = 1;
@@ -138,6 +182,93 @@ module tb_i2c_write;
 		debug = 4;
 		command = 2'b11; // stop
 		
+		
+		// =========================== not ack
+		
+		// ==================== repeat
+		#(14*4000*T);
+		
+		// -------------------- start writing address
+		debug = 1;
+		command = 0;
+		addr = 6'h2f;
+		wait(status == 3'b110); // yellow -> beginning of writing phase
+		command = 11;
+		#(8*4000*T);	// wait writing 8 bit
+		
+		debug = 13;
+		
+		// ==================== repeat
+		#(14*4000*T);
+		
+		// -------------------- start writing address
+		debug = 1;
+		command = 0;
+		addr = 6'h2f;
+		wait(status == 3'b110); // yellow -> beginning of writing phase
+		#(8*4000*T);	// wait writing 8 bit
+		
+		debug = 0;
+		// fake ack signal
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
+		
+		// -------------------- start writing data
+		debug = 2;
+		command = 1;
+		data = 8'h55;
+		
+		wait(status == 3'b110); // yellow - wait ready status
+		#(8*4000*T);   // wait writing 8 bit
+		
+		debug = 0;
+		// fake ack signal
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		wait(status == 3'b001); // blue -> check ack 
+		
+		debug = 3;
+		// -------------------- start writing data
+		command = 1;
+		data = 8'h08;
+		
+		wait(status == 3'b110); // yellow - wait ready status
+		debug = 4;
+		#(8*4000*T);   // wait writing 8 bit
+		
+		debug = 0;
+		// fake ack signal
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		
+		// ------------------ wating some time
+		debug = 5;
+		command = 2'b10; // wait
+		#(5*4000*T);
+		
+		
+		wait(status == 3'b001); // blue -> check ack 
+		
+		// ----------------- start writing data
+		debug = 6;
+		command = 2'b01;
+		data = 8'h22;
+		
+		wait(status == 3'b110); // yellow - wait ready status
+		#(8*4000*T);   // wait writing 8 bit
+		
+		debug = 0;
+		serital_data = 0;
+		#(4000*T); // 1 scl
+		serital_data = 1;
+		
+		// ---------------- stop
+		debug = 44;
+		command = 2'b11; // stop
 	end
 
 

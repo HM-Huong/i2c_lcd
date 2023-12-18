@@ -65,15 +65,9 @@ module i2c_write(
 		.dout()
 	);
 
-	always_ff @(posedge clk, posedge reset)
-	begin
-		if (reset) begin
-			state_reg <= IDLE;
-			status_reg <= PURPLE;
-		end else begin
-			state_reg <= state_next;
-			status_reg <= status_next;
-		end
+	always_ff @(posedge clk) begin
+		state_reg <= state_next;
+		status_reg <= status_next;
 	end
 
   // next state logic
@@ -160,6 +154,11 @@ module i2c_write(
 				end
 			end
 		endcase
+
+		if (reset) begin
+			state_next = IDLE;
+			status_next = PURPLE;
+		end 
 	end
 	
 	// output logic

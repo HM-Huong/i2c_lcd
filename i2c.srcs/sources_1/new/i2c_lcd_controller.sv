@@ -8,24 +8,22 @@ module i2c_lcd_controller(
 	output tri scl,
 	inout  tri sda 
 );
-	
-	localparam n = 4; // len = 144
-
 	typedef enum {
-		SEND_ADDRESS,
-		ACK,
-		SEND_COMMAND,
-		WAIT,
+		START,
+		WRITE_ADDRESS,
+		CHECK_ACK,
+		WRITE_DATA,
+		DELAY,
+		STOP,
 		DONE
 	} state_type;
 
-	typedef enum{
+	localparam
 		RED = 3'b100,
 		GREEN = 3'b010,
 		BLUE = 3'b001,
 		YELLOW = 3'b110,
-		PURPLE = 3'b101
-	} color_type;
+		PURPLE = 3'b101;
 
 	/*
 		When data is supplied to data pins, 
@@ -37,97 +35,113 @@ module i2c_lcd_controller(
 		since the system clock is 100MHz (10ns),
 		we need to count 100 cycles
 	*/
-
 	localparam dvsr = 100;
-
 	logic [8:0] c_reg, c_next;
+
+	localparam n = 144; // 144 bytes
+	(*rom_style = "block"*) logic [7:0] rom [0:2 ** $clog2(n) - 1];
+	logic [0:2 ** $clog2(n) - 1] addr_reg, addr_next;
+	initial $readmemh("rom.mem", rom);
+
 	logic [1:0] cmd_next, cmd_reg;
-	logic [7:0] data_reg, data_next, addr_reg, addr_next;
-	logic [2:0] status_i;
-	logic [7:0] rom [0:n];
+	logic [7:0] data;
+	
 	state_type state_reg, state_next;
-	initial
-    	$readmemh("rom.mem", rom);
-    
+    logic [2:0] status_i;
+	
 	i2c_write  i2c_write_inst (
 		.clk(clk),
 		.reset(!rst_n),
 		.command(cmd_reg), // 00 start, 01 write, 10 wait, 11 stop
 		.addr('h2f),
-		.data(data_reg),
+		.data(data),
 		.status(status_i),
 		.scl(scl),
 		.sda(sda)
 	);
 	
-	assign status = status_i;
+	always_ff @(posedge clk) begin
+		data <= rom[addr_reg];
+		addr_reg <= addr_next;
+	end
 
-	always_ff @(posedge clk, negedge rst_n) begin
-		if (!rst_n) begin
-			state_reg <= SEND_ADDRESS;
-			c_reg <= 0;
-			addr_reg <= 0;
-			data_reg <= 0;
-			cmd_reg <= 0;
-		end else begin
-			state_reg <= state_next;
-			c_reg <= c_next;
-			addr_reg <= addr_next;
-			data_reg <= data_next;
-			cmd_reg <= cmd_next;
-		end
+	always_ff @(posedge clk) begin
+		state_reg <= state_next;
+		c_reg <= c_next;
+		cmd_reg <= cmd_next;
 	end
 
 	always_comb begin
-		state_next = state_reg;
 		c_next = c_reg + 1;
+		state_next = state_reg;
 		addr_next = addr_reg;
-		data_next = data_reg;
-		cmd_next = cmd_reg;
+		cmd_next = 0; // start/wait
+
 		case (state_reg)
-			SEND_ADDRESS: begin
-				cmd_next = 2'b00;
-				state_next = ACK;
-			end
-			ACK: begin
-				case (status_i)
-					RED:
-						state_next = DONE;
-					GREEN:
-						state_next = SEND_COMMAND;
-					default:
-						state_next = ACK;
-				endcase
-			end
-			SEND_COMMAND: begin
-				c_next = 0;
-				cmd_next = 2'b01;
-				data_next = rom[addr_reg];
-				// waiting for ack
-				if (status_i == GREEN) begin
-					state_next = WAIT;
+			START: begin
+				if (status_i == BLUE) begin
+					state_next = WRITE_ADDRESS;
 				end
-				// i2c module didn't ack
+			end
+
+			WRITE_ADDRESS: begin
+				if (status_i == YELLOW) begin
+					state_next = DELAY;
+					c_next = 0;
+				end
+			end
+			
+			DELAY: begin
+				if (c_reg == dvsr) begin
+					state_next = CHECK_ACK;
+				end
+			end
+			
+			CHECK_ACK: begin
 				if (status_i == RED) begin
+					state_next = DONE;
+				end else if (status_i == BLUE) begin
+					state_next = WRITE_DATA;
+				end
+			end
+
+			WRITE_DATA: begin // status = blue
+				// write data
+				if (addr_reg == n) begin
+					state_next = STOP;
+				end else begin
+					cmd_next = 1'b01;
+				end
+				
+				if (status_i == YELLOW) begin
+					state_next = CHECK_ACK;
+					addr_next = addr_reg + 1;
+				end
+			end
+
+			STOP: begin
+				cmd_next = 2'b11;
+				if (status_i != BLUE) begin
 					state_next = DONE;
 				end
 			end
-			WAIT: begin
-				cmd_next = 2'b10; // wait
-				if (c_reg == dvsr) begin
-					state_next = SEND_COMMAND;
-					addr_next = addr_reg + 1;
-					if (addr_reg == n - 1) begin
-						state_next = DONE;
-					end
-				end
-			end
+			
 			DONE: begin
 				cmd_next = 2'b11;
-				data_next = 0;
+				state_next = DONE; // stick here!
 			end
 		endcase
+
+		if (!rst_n) begin
+			addr_next = 0;
+			state_next = START;
+			c_next = 0;
+			cmd_next = 0;
+		end 
 	end
+
+	// output logic
+	assign status = status_i;
 
 endmodule  
 

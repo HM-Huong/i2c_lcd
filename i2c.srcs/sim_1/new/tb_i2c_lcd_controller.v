@@ -31,43 +31,117 @@ module tb_i2c_lcd_controller;
 	end
 	
 	initial begin
-		serital_data = 1;
+		serital_data = 0;
 		rst_n = 0;
 		#T;
 		rst_n = 1;
-		#(2000*T);
 		
-		debug = 0;
-		wait(status == 3'b110); // yellow -> wait ready status
-		#(8*4000*T);	// wait writing 8 bit
-		// fake ack signal
-		debug = 1;
-		serital_data = 0;
-		#(4000*T); // 1 scl
-		serital_data = 1;
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 1;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
 		
-		wait(status == 3'b110); // yellow -> wait ready status
-		#(8*4000*T);	// wait writing 8 bit
-		// fake ack signal
-		debug = 2;
-		serital_data = 0;
-		#(4000*T); // 1 scl
-		serital_data = 1;
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 2;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
 		
-		wait(status == 3'b110); // yellow -> wait ready status
-		#(8*4000*T);	// wait writing 8 bit
-		// fake ack signal
-		debug = 3;
-		serital_data = 0;
-		#(4000*T); // 1 scl
-		serital_data = 1;
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 3;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
 		
-		wait(status == 3'b110); // yellow -> wait ready status
-		#(8*4000*T);	// wait writing 8 bit
-		// fake ack signal
-		debug = 4;
-		serital_data = 0;
-		#(4000*T); // 1 scl
-		serital_data = 1;
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 4;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 1;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 2;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 3;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 4;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 1;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 2;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 3;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
+		
+//		wait(status == 3'b110); // yellow -> beginning of writing phase
+//		#(8*4000*T);	// wait writing 8 bit
+//		debug = 4;
+//		// fake ack signal
+//		serital_data = 0;
+//		#(4000*T); // 1 scl
+//		serital_data = 1;
+//		wait(status == 3'b001); // blue -> check ack 
 	end
 endmodule

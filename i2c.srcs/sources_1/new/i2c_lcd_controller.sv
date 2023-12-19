@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-
 module i2c_lcd_controller(
 	input  logic clk,
 	input  logic rst_n,
@@ -35,10 +34,10 @@ module i2c_lcd_controller(
 		since the system clock is 100MHz (10ns),
 		we need to count 100 cycles
 	*/
-	localparam dvsr = 100;
-	logic [8:0] c_reg, c_next;
+	localparam dvsr = 400;
+	logic [2 ** $clog2(dvsr) - 1:0] c_reg, c_next;
 
-	localparam n = 144; // 144 bytes
+	localparam n = 136; // 136 bytes
 	(*rom_style = "block"*) logic [7:0] rom [0:2 ** $clog2(n) - 1];
 	logic [0:2 ** $clog2(n) - 1] addr_reg, addr_next;
 	initial $readmemh("rom.mem", rom);
@@ -53,7 +52,7 @@ module i2c_lcd_controller(
 		.clk(clk),
 		.reset(!rst_n),
 		.command(cmd_reg), // 00 start, 01 write, 10 wait, 11 stop
-		.addr('h2f),
+		.addr('h27),
 		.data(data),
 		.status(status_i),
 		.scl(scl),

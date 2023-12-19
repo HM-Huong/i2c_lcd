@@ -38,9 +38,9 @@ module i2c_lcd_controller(
 	logic [2 ** $clog2(dvsr) - 1:0] c_reg, c_next;
 
 	localparam total = 136; // 136 bytes
-	(*rom_style = "block"*) logic [7:0] rom [0:2 ** $clog2(total) - 1];
+	(*rom_style = "block"*) logic [7:0] lut [0:2 ** $clog2(total) - 1];
 	logic [0:2 ** $clog2(total) - 1] addr_reg, addr_next;
-	initial $readmemh("rom.mem", rom);
+	initial $readmemh("lut.mem", lut);
 
 	logic [1:0] cmd_next, cmd_reg;
 	logic [7:0] data;
@@ -52,7 +52,7 @@ module i2c_lcd_controller(
 		.clk(clk),
 		.reset(!rst_n),
 		.command(cmd_reg), // 00 start, 01 write, 10 wait, 11 stop
-		.addr('h27),
+		.addr('h27),       // i2c module address
 		.data(data),
 		.status(status_i),
 		.scl(scl),
@@ -60,7 +60,7 @@ module i2c_lcd_controller(
 	);
 	
 	always_ff @(posedge clk) begin
-		data <= rom[addr_reg];
+		data <= lut[addr_reg];
 		addr_reg <= addr_next;
 	end
 

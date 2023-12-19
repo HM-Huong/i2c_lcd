@@ -4,6 +4,7 @@ set_property MARK_DEBUG true [get_nets sda_TRI]
 set_property MARK_DEBUG true [get_nets sda_IBUF]
 
 set_property MARK_DEBUG true [get_nets rst_n_IBUF]
+
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
 set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]

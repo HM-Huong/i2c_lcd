@@ -3,7 +3,7 @@
 module i2c_lcd_controller(
 	input  logic clk,
 	input  logic rst_n,
-	output logic [2:0] status,
+	output logic [2:0] status, // rgb
 	output tri scl,
 	inout  tri sda 
 );
@@ -30,16 +30,16 @@ module i2c_lcd_controller(
 		in order for the LCD to latch in the data present 
 		at the data pins. This pulse must
 		be a minimum of 450 ns wide.
-		-> choose 1us = 1000 ns
+		-> choose 4us = 4000 ns
 		since the system clock is 100MHz (10ns),
-		we need to count 100 cycles
+		we need to count 4000/10 = 400 cycles
 	*/
 	localparam dvsr = 400;
 	logic [2 ** $clog2(dvsr) - 1:0] c_reg, c_next;
 
-	localparam n = 136; // 136 bytes
-	(*rom_style = "block"*) logic [7:0] rom [0:2 ** $clog2(n) - 1];
-	logic [0:2 ** $clog2(n) - 1] addr_reg, addr_next;
+	localparam total = 136; // 136 bytes
+	(*rom_style = "block"*) logic [7:0] rom [0:2 ** $clog2(total) - 1];
+	logic [0:2 ** $clog2(total) - 1] addr_reg, addr_next;
 	initial $readmemh("rom.mem", rom);
 
 	logic [1:0] cmd_next, cmd_reg;
@@ -106,7 +106,7 @@ module i2c_lcd_controller(
 
 			WRITE_DATA: begin // status = blue
 				// write data
-				if (addr_reg == n) begin
+				if (addr_reg == total) begin
 					state_next = STOP;
 				end else begin
 					cmd_next = 1'b01;
@@ -139,8 +139,6 @@ module i2c_lcd_controller(
 		end 
 	end
 
-	// output logic
 	assign status = status_i;
 
 endmodule  
-

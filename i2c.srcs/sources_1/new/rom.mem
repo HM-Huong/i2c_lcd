@@ -16,8 +16,7 @@
 
 	de gui 8 bit du lieu cho lcd ta cung phai lam tuong tu nhung de RS = 1
 
-	moi dong trong file nay se chua mot chu so hexa can phai gui cho i2c de dieu khien lcd
-	co tong cong 144 lenh can phai gui cho lcd de hien thi chuoi:
+	trong file nay se chua cac chu so hexa can phai gui cho module i2c de dieu khien lcd hien thi chuoi:
 	"     HQH     "
 	" Hello, world!"
 */

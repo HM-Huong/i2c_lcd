@@ -7,7 +7,7 @@ module i2c_write(
 	input logic [7:0] data,
 	output logic [2:0] status, // rgb
 
-	// i2c interface
+	// i2c 
 	output tri scl,
 	inout  tri sda
 );
@@ -161,7 +161,6 @@ module i2c_write(
 		end 
 	end
 	
-	// output logic
 	assign status = status_reg;
 	
 endmodule
